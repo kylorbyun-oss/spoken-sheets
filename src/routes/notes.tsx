@@ -17,7 +17,7 @@ export const Route = createFileRoute("/notes")({
       { property: "og:description", content: "말로 남긴 한 페이지들이 모이는 조용한 보관함." },
     ],
   }),
-  component: SavedNotes;
+  component: SavedNotes,
 });
 
 function SavedNotes() {
