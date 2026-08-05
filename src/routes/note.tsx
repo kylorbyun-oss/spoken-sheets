@@ -108,20 +108,38 @@ function NoteEditor() {
           </div>
 
           <div className="paper-ruled px-6 py-4 sm:px-10">
-            <textarea
-              ref={textareaRef}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="마이크를 켜고 이야기해 보세요. 또는 이곳에 직접 적어도 좋습니다."
-              rows={14}
-              className="min-h-[38vh] w-full sm:min-h-[45vh] resize-none bg-transparent font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/60"
-            />
-            {interim && (
-              <p className="font-serif-display text-[1.05rem] leading-[2.25rem] text-muted-foreground/80 italic">
-                {interim}
-              </p>
+            {listening ? (
+              <div
+                onClick={stop}
+                className="min-h-[38vh] w-full font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground sm:min-h-[45vh]"
+              >
+                {body ? (
+                  body.split("\n").map((line, i) => (
+                    <p key={i} className={i >= writtenFrom ? "ink-line-instant" : undefined}>
+                      {line || "\u00a0"}
+                    </p>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground/60">
+                    이야기해 보세요. 한 줄씩 이 종이에 적힙니다.
+                  </p>
+                )}
+                {interim && (
+                  <p className="text-muted-foreground/70 italic">{interim}</p>
+                )}
+              </div>
+            ) : (
+              <textarea
+                ref={textareaRef}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder="마이크를 켜고 이야기해 보세요. 또는 이곳에 직접 적어도 좋습니다."
+                rows={14}
+                className="min-h-[38vh] w-full resize-none bg-transparent font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/60 sm:min-h-[45vh]"
+              />
             )}
           </div>
+
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-6 py-4 text-xs text-muted-foreground sm:px-10">
             <span>{countWords(body)} 단어</span>
