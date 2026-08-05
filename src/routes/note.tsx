@@ -47,13 +47,18 @@ function NoteEditor() {
     setHydrated(true);
   }, [id]);
 
+  // Spoken thoughts land on their own line, so the page fills up line by line.
+  const [writtenFrom, setWrittenFrom] = useState(Number.MAX_SAFE_INTEGER);
   const appendFinal = useCallback((text: string) => {
-    if (!text) return;
+    const line = text.trim();
+    if (!line) return;
     setBody((prev) => {
-      const needsSpace = prev && !/\s$/.test(prev);
-      return `${prev}${needsSpace ? " " : ""}${text}`;
+      const lines = prev ? prev.split("\n") : [];
+      setWrittenFrom(lines.length);
+      return prev ? `${prev.replace(/\s+$/, "")}\n${line}` : line;
     });
   }, []);
+
 
   const { supported, listening, interim, error, toggle, stop } = useSpeechRecognition({
     lang: "ko-KR",
