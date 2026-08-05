@@ -151,6 +151,44 @@
   background-image: var(--gradient-dawn);
 }
 
+/* A warm desk-lamp pool of light behind the page. */
+@utility lamp-glow {
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(
+      120% 70% at 50% -10%,
+      color-mix(in oklab, var(--accent) 16%, transparent) 0%,
+      transparent 60%
+    );
+  }
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* A hand-drawn pen line that appears on hover. */
+@utility pen-underline {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--accent) 70%, transparent),
+    color-mix(in oklab, var(--accent) 70%, transparent)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition:
+    background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease;
+  &:hover {
+    background-size: 100% 1px;
+  }
+}
+
 @utility ink-grain {
   position: relative;
   &::after {
