@@ -8,7 +8,7 @@ import { countWords, formatDate, getNote, saveNote } from "@/lib/notes";
 
 export const Route = createFileRoute("/note")({
   validateSearch: (search: Record<string, unknown>) => ({
-    id: typeof search.id === "string" ? search.id : undefined,
+    id: typeof search["id"] === "string" ? (search["id"] as string) : undefined,
   }),
   head: () => ({
     meta: [
@@ -62,7 +62,7 @@ function NoteEditor() {
 
   const persist = useCallback(() => {
     if (!body.trim() && !title.trim()) return;
-    const note = saveNote({ id: noteId, title, body });
+    const note = saveNote({ ...(noteId ? { id: noteId } : {}), title, body });
     setNoteId(note.id);
     setSavedAt(note.updatedAt);
     if (!noteId) navigate({ to: "/note", search: { id: note.id }, replace: true });
