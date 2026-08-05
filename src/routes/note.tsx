@@ -109,7 +109,7 @@ function NoteEditor() {
               onChange={(e) => setBody(e.target.value)}
               placeholder="마이크를 켜고 이야기해 보세요. 또는 이곳에 직접 적어도 좋습니다."
               rows={14}
-              className="min-h-[45vh] w-full resize-none bg-transparent font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/60"
+              className="min-h-[38vh] w-full sm:min-h-[45vh] resize-none bg-transparent font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/60"
             />
             {interim && (
               <p className="font-serif-display text-[1.05rem] leading-[2.25rem] text-muted-foreground/80 italic">

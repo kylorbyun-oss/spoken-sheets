@@ -140,7 +140,8 @@
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0px,
-    transparent 2.24rem,
+    transparent calc(2.25rem - 1px),
+    var(--ruled) calc(2.25rem - 1px),
     var(--ruled) 2.25rem
   );
   background-attachment: local;
