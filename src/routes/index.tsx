@@ -37,7 +37,7 @@ function Landing() {
         <p className="fade-up font-serif-display text-sm text-muted-foreground/90">{today()}</p>
 
         <div className="paper-sheet ink-grain fade-up mt-5 overflow-hidden rounded-[1.4rem]">
-          <div className="paper-ruled px-7 pt-10 pb-9 sm:px-14 sm:pt-14 sm:pb-12">
+          <div className="paper-ruled px-7 pt-[2.25rem] pb-[2.25rem] sm:px-14 sm:pt-[4.5rem]">
             <h1 className="font-serif-display text-[1.9rem] leading-[2.25rem] text-balance-tight sm:text-[2.5rem] sm:leading-[4.5rem]">
               생각을 한 장의
               <br />
