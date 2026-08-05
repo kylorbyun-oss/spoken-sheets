@@ -56,7 +56,7 @@ export function saveNote(input: { id?: string; title?: string; body: string }): 
     id: input.id ?? createId(),
     title: (input.title?.trim() || deriveTitle(input.body)).slice(0, 120),
     body: input.body,
-    createdAt: existingIndex >= 0 ? notes[existingIndex].createdAt : now,
+    createdAt: notes[existingIndex]?.createdAt ?? now,
     updatedAt: now,
   };
 
