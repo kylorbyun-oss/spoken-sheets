@@ -76,13 +76,13 @@ function SavedNotes() {
             >
               <Link to="/note" search={{ id: note.id }} className="block px-6 py-6">
                 <h2 className="font-serif-display text-xl leading-snug text-foreground">
-                  {note.title}
+                  {note.title || "제목 없는 페이지"}
                 </h2>
                 <p className="mt-3 line-clamp-4 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
-                  {note.body || "내용이 없습니다."}
+                  {note.body || "여기에 생각이 머물렀어요."}
                 </p>
                 <p className="mt-5 text-xs text-muted-foreground/80">
-                  {formatDate(note.updatedAt)} · {countWords(note.body)} 단어
+                  {formatDate(note.updatedAt)} · {countWords(note.body)} 마디
                 </p>
               </Link>
               <button
