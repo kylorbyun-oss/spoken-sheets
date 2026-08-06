@@ -47,7 +47,7 @@ function Landing() {
     setOpening(true);
     window.setTimeout(() => {
       void navigate({ to: "/note" });
-    }, 1750);
+    }, 3200);
   };
 
   return (
