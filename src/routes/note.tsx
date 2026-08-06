@@ -93,7 +93,7 @@ function NoteEditor() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase">today's page</p>
           <p className="text-xs text-muted-foreground">
-            {savedAt ? `저장됨 · ${formatDate(savedAt)}` : "아직 저장되지 않음"}
+            {savedAt ? `남겨둠 · ${formatDate(savedAt)}` : "아직 남기지 않음"}
           </p>
         </div>
 
