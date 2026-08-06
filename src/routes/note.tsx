@@ -121,7 +121,7 @@ function NoteEditor() {
                   ))
                 ) : (
                   <p className="text-muted-foreground/60">
-                    이야기해 보세요. 한 줄씩 이 종이에 적힙니다.
+                    완성되지 않아도 괜찮아요. 떠오르는 대로 이야기해 보세요.
                   </p>
                 )}
                 {interim && (
@@ -133,7 +133,7 @@ function NoteEditor() {
                 ref={textareaRef}
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="마이크를 켜고 이야기해 보세요. 또는 이곳에 직접 적어도 좋습니다."
+                placeholder="마이크를 켜고 떠오르는 대로 이야기해 보세요. 문장이 완성되지 않아도 괜찮습니다."
                 rows={14}
                 className="min-h-[38vh] w-full resize-none bg-transparent font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/60 sm:min-h-[45vh]"
               />
