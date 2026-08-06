@@ -377,3 +377,73 @@
 @utility ink-line-instant {
   animation: vb-ink-line 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* ── Open notebook spread (writing page) ──────────────── */
+
+@utility desk-surface {
+  background-color: color-mix(in oklab, var(--accent) 6%, var(--background));
+  background-image: radial-gradient(
+    110% 80% at 50% -20%,
+    color-mix(in oklab, var(--accent) 14%, transparent) 0%,
+    transparent 65%
+  );
+}
+
+/* The hard cover peeking out around the paper. */
+@utility book-body {
+  border-radius: 1.1rem;
+  padding: 0.7rem;
+  background-image: linear-gradient(
+    150deg,
+    color-mix(in oklab, var(--accent) 62%, var(--paper)) 0%,
+    color-mix(in oklab, var(--accent) 48%, var(--paper)) 55%,
+    color-mix(in oklab, var(--accent) 70%, var(--ink) 6%) 100%
+  );
+  box-shadow:
+    0 2px 0 color-mix(in oklab, var(--ink) 8%, transparent),
+    0 42px 90px -40px color-mix(in oklab, var(--ink) 55%, transparent);
+}
+
+@utility book-paper {
+  background-color: color-mix(in oklab, var(--accent) 4%, var(--paper));
+  border-radius: 0.55rem;
+  box-shadow: inset 0 1px 0 color-mix(in oklab, white 60%, transparent);
+}
+
+/* Center gutter shadow where two pages meet. */
+@utility book-gutter {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    color-mix(in oklab, var(--ink) 12%, transparent) 42%,
+    color-mix(in oklab, var(--ink) 18%, transparent) 50%,
+    color-mix(in oklab, var(--ink) 12%, transparent) 58%,
+    transparent 100%
+  );
+}
+
+@utility hand {
+  font-family: var(--font-hand);
+}
+
+/* Soft highlighter swipe behind a label. */
+@utility marker-highlight {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--accent) 42%, transparent),
+    color-mix(in oklab, var(--accent) 26%, transparent)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 62%;
+  background-size: 100% 0.7em;
+  padding: 0 0.15em;
+}
+
+@utility ribbon-tail {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--accent) 82%, var(--ink) 4%),
+    color-mix(in oklab, var(--accent) 62%, var(--ink) 10%)
+  );
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+}
