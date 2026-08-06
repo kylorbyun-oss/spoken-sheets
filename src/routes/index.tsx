@@ -115,7 +115,7 @@ function Landing() {
         </div>
 
         <p className="fade-up mt-9 font-serif-display text-xs leading-[2.25rem] text-muted-foreground/80">
-          말하면 한 줄씩 쓰이고, 멈추면 남습니다. 이 노트는 당신의 브라우저 안에만 머무릅니다.
+          말하면 한 줄씩 쓰이고, 멈추면 남습니다. 완벽하지 않아도 이 노트는 당신의 생각을 그대로 받아둡니다.
         </p>
       </section>
     </PageShell>
