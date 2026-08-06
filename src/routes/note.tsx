@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Mic, MicOff, Check, Trash2, AlertCircle } from "lucide-react";
+import { Mic, MicOff, Check, Trash2, AlertCircle, BookOpen, Feather } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { PageShell } from "@/components/page-shell";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { countWords, formatDate, getNote, saveNote } from "@/lib/notes";
 
@@ -59,7 +58,6 @@ function NoteEditor() {
     });
   }, []);
 
-
   const { supported, listening, interim, error, toggle, stop } = useSpeechRecognition({
     lang: "ko-KR",
     onFinal: appendFinal,
@@ -87,130 +85,205 @@ function NoteEditor() {
     textareaRef.current?.focus();
   };
 
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(
+      new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).format(
+        new Date(),
+      ),
+    );
+  }, []);
+
   return (
-    <PageShell>
-      <div className="mx-auto max-w-3xl px-4 pt-8 pb-40 sm:px-5 sm:pt-12">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase">today's page</p>
-          <p className="text-xs text-muted-foreground">
-            {savedAt ? `남겨둠 · ${formatDate(savedAt)}` : "아직 남기지 않음"}
-          </p>
-        </div>
+    <div className="desk-surface min-h-screen">
+      <div className="mx-auto flex max-w-[1500px] flex-col gap-10 px-5 py-10 lg:flex-row lg:gap-14 lg:px-10 lg:py-16">
+        {/* ── Left control panel ───────────────────────── */}
+        <aside className="w-full shrink-0 lg:w-[268px]">
+          <div className="lg:sticky lg:top-16">
+            <Link to="/" className="inline-flex items-baseline gap-2">
+              <span className="font-serif-display text-[0.95rem] tracking-[0.34em] text-foreground/75">
+                VOICE BOOK
+              </span>
+            </Link>
 
-        <div className="paper-sheet ink-grain mt-4 overflow-hidden rounded-2xl">
-          <div className="border-b border-border/60 px-6 pt-7 pb-4 sm:px-10">
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="제목 없는 페이지"
-              className="w-full bg-transparent font-serif-display text-2xl text-foreground outline-none placeholder:text-muted-foreground/60 sm:text-3xl"
-            />
-          </div>
+            <h1 className="mt-7 font-serif-display text-2xl text-foreground">
+              오늘의 <span className="marker-highlight">한 페이지</span>
+            </h1>
+            <p className="hand mt-1 text-lg leading-tight text-muted-foreground">
+              말하면, 종이에 그대로 남습니다.
+            </p>
 
-          <div className="paper-ruled px-6 py-4 sm:px-10">
-            {listening ? (
-              <div
-                onClick={stop}
-                className="min-h-[38vh] w-full font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground sm:min-h-[45vh]"
-              >
-                {body ? (
-                  body.split("\n").map((line, i) => (
-                    <p key={i} className={i >= writtenFrom ? "ink-line-instant" : undefined}>
-                      {line || "\u00a0"}
-                    </p>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground/60">
-                    완성되지 않아도 괜찮아요. 떠오르는 대로 이야기해 보세요.
-                  </p>
-                )}
-                {interim && (
-                  <p className="text-muted-foreground/70 italic">{interim}</p>
-                )}
-              </div>
-            ) : (
-              <textarea
-                ref={textareaRef}
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder="마이크를 켜고 떠오르는 대로 이야기해 보세요. 문장이 완성되지 않아도 괜찮습니다."
-                rows={14}
-                className="min-h-[38vh] w-full resize-none bg-transparent font-serif-display text-[1.05rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/60 sm:min-h-[45vh]"
-              />
-            )}
-          </div>
-
-
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-6 py-4 text-xs text-muted-foreground sm:px-10">
-            <span>{countWords(body)} 단어</span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={clear}
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors hover:bg-secondary"
-              >
-                <Trash2 className="size-3.5" /> 비우기
-              </button>
-              <button
-                onClick={persist}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-primary-foreground transition-transform hover:-translate-y-0.5"
-              >
-                <Check className="size-3.5" /> 저장
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {(!supported || error) && (
-          <div className="mt-4 flex items-start gap-2 rounded-xl border border-border/70 bg-card/70 px-4 py-3 text-sm text-muted-foreground">
-            <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
-            <span>
-              {error ??
-                "이 브라우저는 음성 인식을 지원하지 않습니다. Chrome 또는 Edge에서 열어 보세요. 직접 타이핑은 그대로 가능합니다."}
-            </span>
-          </div>
-        )}
-
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          완벽하지 않아도 괜찮습니다. 기록은 이 브라우저에만 머무릅니다 ·{" "}
-          <Link to="/notes" className="underline underline-offset-4 hover:text-foreground">
-            보관함 보기
-          </Link>
-        </p>
-      </div>
-
-      {/* Mic dock */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center pb-8">
-        <div className="pointer-events-auto flex flex-col items-center gap-3">
-          {listening && (
-            <div className="flex h-6 items-end gap-1">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <span
-                  key={i}
-                  className="wave-bar w-1 rounded-full bg-accent"
-                  style={{ height: "100%", animationDelay: `${i * 0.12}s` }}
-                />
-              ))}
-            </div>
-          )}
-          <div className="relative">
-            {listening && (
-              <span className="pulse-ring absolute inset-0 rounded-full bg-accent/40" />
-            )}
+            {/* Mic */}
             <button
               onClick={toggle}
               disabled={!supported}
               aria-label={listening ? "음성 인식 멈추기" : "음성 인식 시작"}
-              className="relative flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-lift)] transition-transform hover:scale-105 disabled:opacity-40 data-[listening=true]:bg-accent data-[listening=true]:text-accent-foreground"
-              data-listening={listening}
+              className="mt-8 flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-5 py-4 text-accent-foreground shadow-[var(--shadow-page)] transition-transform hover:-translate-y-0.5 disabled:opacity-40"
             >
-              {listening ? <MicOff className="size-6" /> : <Mic className="size-6" />}
+              {listening ? <MicOff className="size-5" /> : <Mic className="size-5" />}
+              <span className="font-serif-display text-base">
+                {listening ? "듣는 중…" : "말하기 시작"}
+              </span>
             </button>
+
+            <div className="mt-5 flex h-6 items-end justify-center gap-1">
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+                <span
+                  key={i}
+                  className={`w-1 rounded-full bg-accent transition-opacity ${
+                    listening ? "wave-bar" : "opacity-25"
+                  }`}
+                  style={{ height: listening ? "100%" : "35%", animationDelay: `${i * 0.09}s` }}
+                />
+              ))}
+            </div>
+
+            {/* Quiet meta */}
+            <dl className="mt-9 space-y-3 border-t border-border/70 pt-6 text-sm">
+              <div className="flex items-baseline justify-between gap-3">
+                <dt className="text-muted-foreground">오늘</dt>
+                <dd className="hand text-lg text-foreground">{today || "—"}</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3">
+                <dt className="text-muted-foreground">적은 마디</dt>
+                <dd className="hand text-lg text-foreground">{countWords(body)}</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3">
+                <dt className="text-muted-foreground">기록</dt>
+                <dd className="text-right text-xs text-muted-foreground">
+                  {savedAt ? `남겨둠 · ${formatDate(savedAt)}` : "아직 남기지 않음"}
+                </dd>
+              </div>
+            </dl>
+
+            <div className="mt-8 flex flex-col gap-2 border-t border-border/70 pt-6">
+              <button
+                onClick={persist}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
+              >
+                <Check className="size-4" /> 이 페이지 남기기
+              </button>
+              <button
+                onClick={clear}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary"
+              >
+                <Trash2 className="size-4" /> 페이지 비우기
+              </button>
+              <Link
+                to="/notes"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary"
+              >
+                <BookOpen className="size-4" /> 지난 페이지
+              </Link>
+            </div>
+
+            {(!supported || error) && (
+              <div className="mt-7 flex items-start gap-2 rounded-xl border border-border/70 bg-card/70 px-3.5 py-3 text-xs leading-relaxed text-muted-foreground">
+                <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
+                <span>
+                  {error ??
+                    "이 브라우저는 음성 인식을 지원하지 않습니다. Chrome 또는 Edge에서 열어 보세요. 직접 타이핑은 그대로 가능합니다."}
+                </span>
+              </div>
+            )}
           </div>
-          <span className="rounded-full bg-background/80 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-            {listening ? "듣고 있어요…" : "탭하고 말하기"}
-          </span>
-        </div>
+        </aside>
+
+        {/* ── Open notebook ────────────────────────────── */}
+        <section className="min-w-0 flex-1">
+          <div className="book-body relative mx-auto max-w-[980px]">
+            {/* ribbon */}
+            <span className="ribbon-tail absolute -bottom-9 left-[46%] hidden h-12 w-6 rounded-b-sm lg:block" />
+
+            <div className="book-paper ink-grain relative overflow-hidden">
+              {/* center gutter */}
+              <span className="book-gutter pointer-events-none absolute inset-y-0 left-1/2 hidden w-16 -translate-x-1/2 lg:block" />
+
+              <div className="grid lg:grid-cols-2">
+                {/* Left page — heading + writing */}
+                <div className="paper-margin relative px-7 pt-9 pb-8 sm:px-12 lg:pr-10">
+                  <div className="flex items-baseline justify-between gap-4 pl-6 sm:pl-10">
+                    <span className="hand text-lg text-accent-foreground/60">012</span>
+                    <span className="hand text-lg text-muted-foreground">Date. {today}</span>
+                  </div>
+
+                  <div className="mt-4 pl-6 sm:pl-10">
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="오늘의 생각"
+                      className="hand w-full bg-transparent text-3xl text-foreground outline-none placeholder:text-muted-foreground/50 sm:text-4xl"
+                    />
+                    <span className="mt-2 block h-px w-full bg-border/80" />
+                  </div>
+
+                  <div className="paper-ruled mt-5 pl-6 sm:pl-10">
+                    {listening ? (
+                      <div
+                        onClick={stop}
+                        className="hand min-h-[46vh] w-full text-[1.4rem] leading-[2.25rem] text-foreground lg:min-h-[52vh]"
+                      >
+                        {body ? (
+                          body.split("\n").map((line, i) => (
+                            <p key={i} className={i >= writtenFrom ? "ink-line-instant" : undefined}>
+                              {line || "\u00a0"}
+                            </p>
+                          ))
+                        ) : (
+                          <p className="text-muted-foreground/60">
+                            완성되지 않아도 괜찮아요. 떠오르는 대로 이야기해 보세요.
+                          </p>
+                        )}
+                        {interim && <p className="text-muted-foreground/70 italic">{interim}</p>}
+                      </div>
+                    ) : (
+                      <textarea
+                        ref={textareaRef}
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
+                        placeholder="마이크를 켜고 떠오르는 대로 이야기해 보세요. 문장이 완성되지 않아도 괜찮습니다."
+                        rows={14}
+                        className="hand min-h-[46vh] w-full resize-none bg-transparent text-[1.4rem] leading-[2.25rem] text-foreground outline-none placeholder:text-muted-foreground/50 lg:min-h-[52vh]"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Right page — quiet continuation */}
+                <div className="relative hidden flex-col px-7 pt-9 pb-8 sm:px-12 lg:flex lg:pl-10">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="hand text-lg text-muted-foreground">
+                      {listening ? "지금 적히는 중" : "남겨진 흔적"}
+                    </span>
+                    <span className="hand text-lg text-accent-foreground/60">013</span>
+                  </div>
+
+                  <div className="paper-ruled mt-8 flex-1">
+                    <p className="hand text-[1.4rem] leading-[2.25rem] text-muted-foreground/80">
+                      {body
+                        ? body.split("\n").slice(-6).join(" ").slice(0, 220)
+                        : "이 페이지는 잘 쓰기 위한 곳이 아닙니다. 그냥 머물러도 괜찮습니다."}
+                    </p>
+                  </div>
+
+                  <div className="mt-8 rounded-lg border border-accent/50 bg-accent/10 px-5 py-4">
+                    <p className="hand flex items-center gap-2 text-lg text-foreground">
+                      <Feather className="size-4 text-accent-foreground/70" /> 오늘의 한 줄
+                    </p>
+                    <p className="hand mt-1 text-[1.35rem] leading-[2rem] text-foreground/85">
+                      생각을 한 장의 페이지로 남긴다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-10 text-center text-xs text-muted-foreground">
+            완벽하지 않아도 괜찮습니다. 기록은 이 브라우저에만 머무릅니다.
+          </p>
+        </section>
       </div>
-    </PageShell>
+    </div>
   );
 }
