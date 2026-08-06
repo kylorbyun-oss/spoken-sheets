@@ -369,7 +369,7 @@
 
 @utility ink-line {
   animation: vb-ink-line 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 1.05s;
+  animation-delay: 1.5s;
 }
 
 @utility ink-line-instant {
