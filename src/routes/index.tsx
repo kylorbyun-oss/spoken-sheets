@@ -47,7 +47,7 @@ function Landing() {
     setOpening(true);
     window.setTimeout(() => {
       void navigate({ to: "/note" });
-    }, 1750);
+    }, 3200);
   };
 
   return (
@@ -79,7 +79,7 @@ function Landing() {
 
             {/* The closed cover */}
             <div
-              className={`book-cover absolute inset-0 flex flex-col justify-between rounded-[1.6rem] px-7 py-10 sm:px-16 sm:py-14 ${
+              className={`book-cover absolute inset-0 flex flex-col rounded-[1.6rem] px-7 py-10 sm:px-16 sm:py-14 ${
                 opening ? "book-cover-open" : ""
               }`}
             >
@@ -87,18 +87,20 @@ function Landing() {
                 VOICE BOOK
               </p>
 
-              <h1 className="text-balance-tight font-serif-display text-[1.95rem] leading-[3.1rem] text-primary-foreground sm:text-[2.7rem] sm:leading-[4.2rem]">
-                생각을 한 장의
-                <br />
-                페이지로 남긴다.
-              </h1>
+              <div className="flex flex-1 flex-col items-start justify-center py-8">
+                <h1 className="text-balance-tight font-serif-display text-[2.25rem] leading-[3.4rem] text-primary-foreground sm:text-[3.2rem] sm:leading-[4.6rem]">
+                  생각을 한 장의
+                  <br />
+                  페이지로 남긴다.
+                </h1>
+              </div>
 
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <button
                   onClick={open}
                   className="self-start font-serif-display text-lg text-primary-foreground/90 transition-opacity hover:opacity-70"
                 >
-                  {opening ? "펼치는 중…" : "새 페이지 만들기"}{" "}
+                  {opening ? "펼치는 중…" : "📖 빈 페이지 펼치기"}{" "}
                   <span aria-hidden="true">→</span>
                 </button>
                 <Link
