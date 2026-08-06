@@ -42,7 +42,7 @@ function SavedNotes() {
             <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase">archive</p>
             <h1 className="mt-3 font-serif-display text-3xl sm:text-4xl">보관함</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {ready ? `${notes.length}장의 페이지가 남아 있습니다.` : "페이지를 펼치는 중…"}
+              {ready ? `${notes.length}장의 페이지가 여기에 머물고 있습니다.` : "페이지를 펼치는 중…"}
             </p>
           </div>
           <Link
@@ -55,15 +55,15 @@ function SavedNotes() {
 
         {ready && notes.length === 0 && (
           <div className="paper-sheet mt-10 rounded-2xl px-8 py-16 text-center">
-            <p className="font-serif-display text-xl text-foreground/90">아직 비어 있습니다.</p>
+            <p className="font-serif-display text-xl text-foreground/90">아직 페이지가 없습니다.</p>
             <p className="mt-3 text-sm text-muted-foreground">
-              첫 페이지는 한 마디에서 시작됩니다.
+              첫 문장은 완성되지 않아도 괜찮습니다.
             </p>
             <Link
               to="/note"
               className="mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm transition-colors hover:bg-secondary"
             >
-              <Mic className="size-4" /> 말하기 시작
+              <Mic className="size-4" /> 떠오르는 대로 남기기
             </Link>
           </div>
         )}
@@ -76,13 +76,13 @@ function SavedNotes() {
             >
               <Link to="/note" search={{ id: note.id }} className="block px-6 py-6">
                 <h2 className="font-serif-display text-xl leading-snug text-foreground">
-                  {note.title}
+                  {note.title || "제목 없는 페이지"}
                 </h2>
                 <p className="mt-3 line-clamp-4 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
-                  {note.body || "내용이 없습니다."}
+                  {note.body || "여기에 생각이 머물렀어요."}
                 </p>
                 <p className="mt-5 text-xs text-muted-foreground/80">
-                  {formatDate(note.updatedAt)} · {countWords(note.body)} 단어
+                  {formatDate(note.updatedAt)} · {countWords(note.body)} 마디
                 </p>
               </Link>
               <button
