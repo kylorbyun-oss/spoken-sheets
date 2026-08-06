@@ -42,7 +42,7 @@ function SavedNotes() {
             <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase">archive</p>
             <h1 className="mt-3 font-serif-display text-3xl sm:text-4xl">보관함</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {ready ? `${notes.length}장의 페이지가 남아 있습니다.` : "페이지를 펼치는 중…"}
+              {ready ? `${notes.length}장의 페이지가 여기에 머물고 있습니다.` : "페이지를 펼치는 중…"}
             </p>
           </div>
           <Link
