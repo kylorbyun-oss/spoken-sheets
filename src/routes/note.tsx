@@ -171,7 +171,7 @@ function NoteEditor() {
         )}
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          기록은 이 브라우저에만 저장됩니다 ·{" "}
+          완벽하지 않아도 괜찮습니다. 기록은 이 브라우저에만 머무릅니다 ·{" "}
           <Link to="/notes" className="underline underline-offset-4 hover:text-foreground">
             보관함 보기
           </Link>
