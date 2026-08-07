@@ -10,13 +10,25 @@ export type NoteWorkspaceProps = {
   noteId?: string | undefined;
   /** Called when a brand new note gets its id, so the host can sync the URL. */
   onNoteCreated?: (id: string) => void;
+  /** The notebook is still closed — its cover lies over the spread. */
+  covered?: boolean;
+  /** The cover is currently swinging open. */
+  opening?: boolean;
+  /** Asked to open the notebook. */
+  onOpen?: () => void;
 };
 
 /**
  * The open notebook spread: left control panel + the writing pages.
  * Kept as a component so it can live inside any route without a page switch.
  */
-export function NoteWorkspace({ noteId: initialId, onNoteCreated }: NoteWorkspaceProps) {
+export function NoteWorkspace({
+  noteId: initialId,
+  onNoteCreated,
+  covered = false,
+  opening = false,
+  onOpen,
+}: NoteWorkspaceProps) {
   const [noteId, setNoteId] = useState<string | undefined>(initialId);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -180,9 +192,41 @@ export function NoteWorkspace({ noteId: initialId, onNoteCreated }: NoteWorkspac
           </div>
         </aside>
 
-        {/* ── Open notebook ────────────────────────────── */}
+        {/* ── The notebook on the desk ─────────────────── */}
         <section className="min-w-0 flex-1">
-          <div className="book-body relative mx-auto max-w-[980px]">
+          <div className="book-scene relative mx-auto max-w-[980px]">
+            {covered && (
+              <div
+                className={`book-cover absolute inset-0 z-30 flex flex-col rounded-[1.1rem] px-7 py-10 sm:px-14 sm:py-14 ${
+                  opening ? "book-cover-open" : ""
+                }`}
+              >
+                <p className="font-serif-display text-[0.7rem] tracking-[0.42em] text-primary-foreground/60">
+                  VOICE BOOK
+                </p>
+
+                <div className="flex flex-1 flex-col items-start justify-center py-8">
+                  <h2 className="text-balance-tight font-serif-display text-[1.9rem] leading-[2.9rem] text-primary-foreground sm:text-[2.8rem] sm:leading-[4rem]">
+                    생각을 한 장의
+                    <br />
+                    페이지로 남긴다.
+                  </h2>
+                  <p className="mt-6 min-h-5 font-serif-display text-sm tracking-[0.16em] text-primary-foreground/55">
+                    {today}
+                  </p>
+                </div>
+
+                <button
+                  onClick={onOpen}
+                  className="self-start font-serif-display text-lg text-primary-foreground/90 transition-opacity hover:opacity-70"
+                >
+                  {opening ? "펼치는 중…" : "📖 빈 페이지 펼치기"}{" "}
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            )}
+
+            <div className="book-body relative">
             {/* ribbon */}
             <span className="ribbon-tail absolute -bottom-9 left-[46%] hidden h-12 w-6 rounded-b-sm lg:block" />
 
@@ -269,7 +313,9 @@ export function NoteWorkspace({ noteId: initialId, onNoteCreated }: NoteWorkspac
                 </div>
               </div>
             </div>
+            </div>
           </div>
+
 
           <p className="mt-10 text-center text-xs text-muted-foreground">
             완벽하지 않아도 괜찮습니다. 기록은 이 브라우저에만 머무릅니다.
