@@ -3,7 +3,14 @@ import { Mic, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { PageShell } from "@/components/page-shell";
-import { countWords, deleteNote, formatDate, loadNotes, type Note } from "@/lib/notes";
+import {
+  countWords,
+  deleteNote,
+  formatDate,
+  loadNotes,
+  UNTITLED_LABEL,
+  type Note,
+} from "@/lib/notes";
 
 export const Route = createFileRoute("/notes")({
   head: () => ({
@@ -46,7 +53,7 @@ function SavedNotes() {
             </p>
           </div>
           <Link
-            to="/note"
+            to="/"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
           >
             <Mic className="size-4" /> 새 페이지
@@ -60,7 +67,7 @@ function SavedNotes() {
               첫 문장은 완성되지 않아도 괜찮습니다.
             </p>
             <Link
-              to="/note"
+              to="/"
               className="mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm transition-colors hover:bg-secondary"
             >
               <Mic className="size-4" /> 떠오르는 대로 남기기
@@ -74,9 +81,9 @@ function SavedNotes() {
               key={note.id}
               className="paper-sheet ink-grain group relative overflow-hidden rounded-2xl transition-transform hover:-translate-y-1"
             >
-              <Link to="/note" search={{ id: note.id }} className="block px-6 py-6">
+              <Link to="/" search={{ id: note.id }} className="block px-6 py-6">
                 <h2 className="font-serif-display text-xl leading-snug text-foreground">
-                  {note.title || "제목 없는 페이지"}
+                  {note.title || UNTITLED_LABEL}
                 </h2>
                 <p className="mt-3 line-clamp-4 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
                   {note.body || "여기에 생각이 머물렀어요."}

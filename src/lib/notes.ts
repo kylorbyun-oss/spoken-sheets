@@ -41,11 +41,8 @@ export function createId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function deriveTitle(body: string) {
-  const first = body.trim().split("\n")[0]?.trim() ?? "";
-  if (!first) return "제목 없는 페이지";
-  return first.length > 40 ? `${first.slice(0, 40)}…` : first;
-}
+/** Titles are never generated — a page can stay untitled. */
+export const UNTITLED_LABEL = "제목 없음";
 
 export function saveNote(input: { id?: string; title?: string; body: string }): Note {
   const notes = loadNotes();
@@ -54,7 +51,7 @@ export function saveNote(input: { id?: string; title?: string; body: string }): 
 
   const note: Note = {
     id: input.id ?? createId(),
-    title: (input.title?.trim() || deriveTitle(input.body)).slice(0, 120),
+    title: (input.title ?? "").trim().slice(0, 120),
     body: input.body,
     createdAt: notes[existingIndex]?.createdAt ?? now,
     updatedAt: now,
