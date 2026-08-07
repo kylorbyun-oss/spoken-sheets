@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 
 import { NoteWorkspace } from "@/components/note-workspace";
