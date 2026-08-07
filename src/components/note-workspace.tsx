@@ -22,7 +22,13 @@ export type NoteWorkspaceProps = {
  * The open notebook spread: left control panel + the writing pages.
  * Kept as a component so it can live inside any route without a page switch.
  */
-export function NoteWorkspace({ noteId: initialId, onNoteCreated }: NoteWorkspaceProps) {
+export function NoteWorkspace({
+  noteId: initialId,
+  onNoteCreated,
+  covered = false,
+  opening = false,
+  onOpen,
+}: NoteWorkspaceProps) {
   const [noteId, setNoteId] = useState<string | undefined>(initialId);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
