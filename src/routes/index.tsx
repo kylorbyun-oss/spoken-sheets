@@ -25,29 +25,14 @@ export const Route = createFileRoute("/")({
   component: Desk,
 });
 
-function useTodayLabel() {
-  const [label, setLabel] = useState("");
-  useEffect(() => {
-    setLabel(
-      new Intl.DateTimeFormat("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        weekday: "long",
-      }).format(new Date()),
-    );
-  }, []);
-  return label;
-}
-
 /**
- * One desk, one notebook. The workspace is always mounted underneath;
- * the cover simply opens in place — no route change, no in-between page.
+ * One desk, one notebook. The spread is always mounted;
+ * its cover simply lies on top until the user opens it in place.
  */
 function Desk() {
   const { id } = Route.useSearch();
   const navigate = useNavigate();
-  const today = useTodayLabel();
+
 
   // A note opened from the archive is already unfolded.
   const [phase, setPhase] = useState<"closed" | "opening" | "open">(id ? "open" : "closed");
