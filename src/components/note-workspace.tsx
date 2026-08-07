@@ -313,7 +313,9 @@ export function NoteWorkspace({
                 </div>
               </div>
             </div>
+            </div>
           </div>
+
 
           <p className="mt-10 text-center text-xs text-muted-foreground">
             완벽하지 않아도 괜찮습니다. 기록은 이 브라우저에만 머무릅니다.
