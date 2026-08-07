@@ -10,6 +10,12 @@ export type NoteWorkspaceProps = {
   noteId?: string | undefined;
   /** Called when a brand new note gets its id, so the host can sync the URL. */
   onNoteCreated?: (id: string) => void;
+  /** The notebook is still closed — its cover lies over the spread. */
+  covered?: boolean;
+  /** The cover is currently swinging open. */
+  opening?: boolean;
+  /** Asked to open the notebook. */
+  onOpen?: () => void;
 };
 
 /**
