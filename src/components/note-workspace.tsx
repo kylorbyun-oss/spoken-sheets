@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { AlertCircle, BookOpen, Check, Feather, Mic, MicOff, Trash2 } from "lucide-react";
+import { AlertCircle, BookOpen, Check, ChevronLeft, ChevronRight, Feather, Mic, MicOff, RotateCcw, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
-import { countWords, formatDate, getNote, saveNote } from "@/lib/notes";
+import { adjacentNoteId, countWords, formatDate, getNote, saveNote } from "@/lib/notes";
 
 export type NoteWorkspaceProps = {
   /** Existing note to continue writing, if any. */
@@ -35,6 +35,7 @@ export function NoteWorkspace({
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [turning, setTurning] = useState<"older" | "newer" | null>(null);
 
   useEffect(() => {
     setNoteId(initialId);
@@ -45,6 +46,10 @@ export function NoteWorkspace({
         setBody(existing.body);
         setSavedAt(existing.updatedAt);
       }
+    } else {
+      setTitle("");
+      setBody("");
+      setSavedAt(null);
     }
     setHydrated(true);
   }, [initialId]);
@@ -86,6 +91,33 @@ export function NoteWorkspace({
     setBody("");
     setTitle("");
     textareaRef.current?.focus();
+  };
+
+  const canGoOlder = Boolean(adjacentNoteId(noteId, "older"));
+  const canGoNewer = Boolean(adjacentNoteId(noteId, "newer"));
+
+  const turnPage = (direction: "older" | "newer") => {
+    if (turning) return;
+    const nextId = adjacentNoteId(noteId, direction);
+    if (!nextId) return;
+    const nextNote = getNote(nextId);
+    if (!nextNote) return;
+    setTurning(direction);
+    window.setTimeout(() => {
+      setNoteId(nextNote.id);
+      setTitle(nextNote.title);
+      setBody(nextNote.body);
+      setSavedAt(nextNote.updatedAt);
+      setTurning(null);
+    }, 360);
+  };
+
+  const returnToToday = () => {
+    stop();
+    setNoteId(undefined);
+    setTitle("");
+    setBody("");
+    setSavedAt(null);
   };
 
   const [today, setToday] = useState("");
@@ -172,11 +204,35 @@ export function NoteWorkspace({
               >
                 <Trash2 className="size-4" /> 페이지 비우기
               </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => turnPage("older")}
+                  disabled={!canGoOlder || Boolean(turning)}
+                  className="inline-flex items-center justify-center gap-1 rounded-full px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  <ChevronLeft className="size-4" /> 지난 페이지
+                </button>
+                <button
+                  onClick={() => turnPage("newer")}
+                  disabled={!canGoNewer || Boolean(turning)}
+                  className="inline-flex items-center justify-center gap-1 rounded-full px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  다음 페이지 <ChevronRight className="size-4" />
+                </button>
+              </div>
+              {noteId && (
+                <button
+                  onClick={returnToToday}
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-secondary"
+                >
+                  <RotateCcw className="size-3.5" /> 오늘의 페이지
+                </button>
+              )}
               <Link
                 to="/notes"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary"
+                className="inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-secondary"
               >
-                <BookOpen className="size-4" /> 지난 페이지
+                <BookOpen className="size-3.5" /> 전체 페이지 보기
               </Link>
             </div>
 
@@ -226,7 +282,7 @@ export function NoteWorkspace({
               </div>
             )}
 
-            <div className="book-body relative">
+            <div className={"book-body relative " + (turning ? "page-turn-" + turning : "")}>
             {/* ribbon */}
             <span className="ribbon-tail absolute -bottom-9 left-[46%] hidden h-12 w-6 rounded-b-sm lg:block" />
 
