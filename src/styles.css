@@ -355,6 +355,35 @@
   pointer-events: none;
 }
 
+@keyframes vb-page-turn-older {
+  0% { transform: rotateY(0deg); opacity: 1; }
+  45% { transform: rotateY(-4deg) translateX(-0.5rem); opacity: 0.72; }
+  100% { transform: rotateY(0deg) translateX(0); opacity: 1; }
+}
+
+@keyframes vb-page-turn-newer {
+  0% { transform: rotateY(0deg); opacity: 1; }
+  45% { transform: rotateY(4deg) translateX(0.5rem); opacity: 0.72; }
+  100% { transform: rotateY(0deg) translateX(0); opacity: 1; }
+}
+
+@utility page-turn-older {
+  animation: vb-page-turn-older 0.36s ease both;
+}
+
+@utility page-turn-newer {
+  animation: vb-page-turn-newer 0.36s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-cover-open,
+  .page-turn-older,
+  .page-turn-newer {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 /* Ink settling onto the page, one line after another. */
 @keyframes vb-ink-line {
   from {
