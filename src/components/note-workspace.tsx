@@ -36,6 +36,7 @@ export function NoteWorkspace({
   const [hydrated, setHydrated] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [turning, setTurning] = useState<"older" | "newer" | null>(null);
+  const suppressAutosaveRef = useRef(false);
 
   useEffect(() => {
     setNoteId(initialId);
@@ -82,6 +83,10 @@ export function NoteWorkspace({
   // Autosave shortly after typing/speaking stops.
   useEffect(() => {
     if (!hydrated) return;
+    if (suppressAutosaveRef.current) {
+      suppressAutosaveRef.current = false;
+      return;
+    }
     const t = setTimeout(persist, 900);
     return () => clearTimeout(t);
   }, [body, title, hydrated, persist]);
@@ -102,6 +107,7 @@ export function NoteWorkspace({
     if (!nextId) return;
     const nextNote = getNote(nextId);
     if (!nextNote) return;
+    suppressAutosaveRef.current = true;
     setTurning(direction);
     window.setTimeout(() => {
       setNoteId(nextNote.id);
