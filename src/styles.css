@@ -327,8 +327,8 @@
     /* industrial yellow diagonal hazard slashes */
     repeating-linear-gradient(
       -45deg,
-      color-mix(in oklab, var(--industrial-yellow) 90%, transparent) 0 14px,
-      transparent 14px 34px
+      color-mix(in oklab, var(--industrial-yellow) 85%, transparent) 0 10px,
+      transparent 10px 26px
     ),
     /* thin metallic grid */
     repeating-linear-gradient(
@@ -349,7 +349,7 @@
       var(--steel-950) 100%
     );
   background-size:
-    100% 46%,
+    100% 2.6rem,
     auto,
     auto,
     auto;
