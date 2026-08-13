@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import { NoteWorkspace } from "@/components/note-workspace";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    id: typeof search["id"] === "string" ? (search["id"] as string) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { id?: string } =>
+    typeof search["id"] === "string" ? { id: search["id"] as string } : {},
+
   head: () => ({
     meta: [
       { title: "VOICE BOOK — 생각을 한 장의 페이지로 남긴다" },
