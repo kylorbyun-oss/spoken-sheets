@@ -96,3 +96,14 @@ export function formatDate(ts: number) {
   return new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
     month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(ts));
+}
+
+/** Loose word count — "마디" in the UI. */
+export function countWords(text: string) {
+  return text.trim() ? text.trim().split(/\s+/).length : 0;
+}
+
