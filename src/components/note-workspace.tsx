@@ -141,11 +141,13 @@ export function NoteWorkspace({
         {/* ── Left control panel ───────────────────────── */}
         <aside className="w-full shrink-0 lg:w-[268px]">
           <div className="lg:sticky lg:top-16">
-            <span className="inline-flex items-baseline gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <span className="font-serif-display text-[0.95rem] tracking-[0.34em] text-foreground/75">
                 VOICE BOOK
               </span>
-            </span>
+              <ToolHomeButton />
+            </div>
+
 
             <h1 className="mt-7 font-serif-display text-2xl text-foreground">
               오늘의 <span className="marker-highlight">한 페이지</span>
