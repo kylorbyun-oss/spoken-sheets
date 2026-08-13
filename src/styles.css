@@ -520,3 +520,21 @@
   );
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
 }
+
+/* Yellow K Tools shortcut button: charcoal plate with an industrial yellow rule. */
+@utility tool-home-button {
+  color: var(--steel-foreground);
+  background-color: var(--steel-900);
+  background-image: linear-gradient(150deg, var(--steel-700), var(--steel-950));
+  border: 1px solid color-mix(in oklab, var(--industrial-yellow) 38%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 12%, transparent),
+    0 8px 18px -12px color-mix(in oklab, var(--ink) 60%, transparent);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+  &:hover {
+    transform: translateY(-1px);
+    border-color: var(--industrial-yellow);
+  }
+}
