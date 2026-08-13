@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { AlertCircle, BookOpen, Check, ChevronLeft, ChevronRight, Feather, Mic, MicOff, RotateCcw, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 
 import { ToolHomeButton } from "@/components/page-shell";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
@@ -11,6 +12,8 @@ export type NoteWorkspaceProps = {
   noteId?: string | undefined;
   /** Called when a brand new note gets its id, so the host can sync the URL. */
   onNoteCreated?: (id: string) => void;
+  /** Keeps the URL aligned when swiping between saved and blank pages. */
+  onPageChange?: (id: string | undefined) => void;
   /** The notebook is still closed — its cover lies over the spread. */
   covered?: boolean;
   /** The cover is currently swinging open. */
@@ -26,6 +29,7 @@ export type NoteWorkspaceProps = {
 export function NoteWorkspace({
   noteId: initialId,
   onNoteCreated,
+  onPageChange,
   covered = false,
   opening = false,
   onOpen,
@@ -37,6 +41,17 @@ export function NoteWorkspace({
   const [hydrated, setHydrated] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [turning, setTurning] = useState<"older" | "newer" | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [swiping, setSwiping] = useState(false);
+  const bookRef = useRef<HTMLDivElement>(null);
+  const swipeRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    lastX: number;
+    startedAt: number;
+    axis: "horizontal" | "vertical" | null;
+  } | null>(null);
   const suppressAutosaveRef = useRef(false);
 
   useEffect(() => {
@@ -101,6 +116,12 @@ export function NoteWorkspace({
 
   const canGoOlder = Boolean(adjacentNoteId(noteId, "older"));
   const canGoNewer = Boolean(adjacentNoteId(noteId, "newer"));
+  const canOpenNewer = canGoNewer || Boolean(noteId || title.trim() || body.trim());
+
+  const saveCurrentPage = () => {
+    if (!body.trim() && !title.trim()) return;
+    saveNote({ ...(noteId ? { id: noteId } : {}), title, body });
+  };
 
   const turnPage = (direction: "older" | "newer") => {
     if (turning) return;
@@ -108,6 +129,8 @@ export function NoteWorkspace({
     if (!nextId) return;
     const nextNote = getNote(nextId);
     if (!nextNote) return;
+    stop();
+    saveCurrentPage();
     suppressAutosaveRef.current = true;
     setTurning(direction);
     window.setTimeout(() => {
@@ -116,15 +139,91 @@ export function NoteWorkspace({
       setBody(nextNote.body);
       setSavedAt(nextNote.updatedAt);
       setTurning(null);
+      onPageChange?.(nextNote.id);
     }, 360);
   };
 
-  const returnToToday = () => {
+  const openNewPage = () => {
+    if (turning || (!noteId && !title.trim() && !body.trim())) return;
     stop();
-    setNoteId(undefined);
-    setTitle("");
-    setBody("");
-    setSavedAt(null);
+    saveCurrentPage();
+    suppressAutosaveRef.current = true;
+    setTurning("newer");
+    window.setTimeout(() => {
+      setNoteId(undefined);
+      setTitle("");
+      setBody("");
+      setSavedAt(null);
+      setTurning(null);
+      onPageChange?.(undefined);
+    }, 360);
+  };
+
+  const goNewerOrOpen = () => {
+    if (canGoNewer) turnPage("newer");
+    else openNewPage();
+  };
+
+  const returnToToday = () => {
+    if (!noteId) return;
+    openNewPage();
+  };
+
+  const resetSwipe = () => {
+    swipeRef.current = null;
+    setSwiping(false);
+    setSwipeOffset(0);
+  };
+
+  const handleSwipeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (covered || opening || turning) return;
+    const target = event.target as HTMLElement;
+    if (event.pointerType === "mouse" && target.closest("input, textarea, button, a")) return;
+    swipeRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      lastX: event.clientX,
+      startedAt: performance.now(),
+      axis: null,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleSwipeMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const gesture = swipeRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+    const dx = event.clientX - gesture.startX;
+    const dy = event.clientY - gesture.startY;
+    gesture.lastX = event.clientX;
+
+    if (!gesture.axis && Math.hypot(dx, dy) >= 10) {
+      gesture.axis = Math.abs(dx) > Math.abs(dy) * 1.15 ? "horizontal" : "vertical";
+      if (gesture.axis === "horizontal") setSwiping(true);
+    }
+    if (gesture.axis !== "horizontal") return;
+
+    event.preventDefault();
+    const directionAvailable = dx > 0 ? canGoOlder : canOpenNewer;
+    const resisted = directionAvailable ? dx : dx * 0.16;
+    const limit = Math.min(bookRef.current?.clientWidth ?? 720, 720) * 0.42;
+    setSwipeOffset(Math.max(-limit, Math.min(limit, resisted)));
+  };
+
+  const handleSwipeEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const gesture = swipeRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+    const dx = gesture.lastX - gesture.startX;
+    const elapsed = Math.max(performance.now() - gesture.startedAt, 1);
+    const width = bookRef.current?.clientWidth ?? 720;
+    const crossedDistance = Math.abs(dx) >= Math.min(96, width * 0.16);
+    const crossedVelocity = Math.abs(dx) / elapsed >= 0.55 && Math.abs(dx) >= 42;
+    const shouldTurn = gesture.axis === "horizontal" && (crossedDistance || crossedVelocity);
+
+    resetSwipe();
+    if (!shouldTurn) return;
+    if (dx > 0 && canGoOlder) turnPage("older");
+    if (dx < 0 && canOpenNewer) goNewerOrOpen();
   };
 
   const [today, setToday] = useState("");
@@ -222,11 +321,11 @@ export function NoteWorkspace({
                   <ChevronLeft className="size-4" /> 지난 페이지
                 </button>
                 <button
-                  onClick={() => turnPage("newer")}
-                  disabled={!canGoNewer || Boolean(turning)}
+                  onClick={goNewerOrOpen}
+                  disabled={!canOpenNewer || Boolean(turning)}
                   className="inline-flex items-center justify-center gap-1 rounded-full px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35"
                 >
-                  다음 페이지 <ChevronRight className="size-4" />
+                  {canGoNewer ? "다음 페이지" : "새 페이지"} <ChevronRight className="size-4" />
                 </button>
               </div>
               {noteId && (
@@ -293,7 +392,19 @@ export function NoteWorkspace({
               </div>
             )}
 
-            <div className={"book-body relative " + (turning ? "page-turn-" + turning : "")}>
+            <div
+              ref={bookRef}
+              className={`book-body relative ${turning ? "page-turn-" + turning : ""} ${swiping ? "swipe-dragging" : ""}`}
+              style={{
+                "--swipe-x": `${swipeOffset}px`,
+                "--swipe-tilt": `${Math.max(-5, Math.min(5, swipeOffset / 70))}deg`,
+              } as CSSProperties}
+              onPointerDown={handleSwipeStart}
+              onPointerMove={handleSwipeMove}
+              onPointerUp={handleSwipeEnd}
+              onPointerCancel={resetSwipe}
+              aria-label="노트 페이지. 왼쪽으로 밀면 다음 또는 새 페이지, 오른쪽으로 밀면 지난 페이지가 열립니다."
+            >
             {/* ribbon */}
             <span className="ribbon-tail absolute -bottom-9 left-[46%] hidden h-12 w-6 rounded-b-sm lg:block" />
 
@@ -383,6 +494,12 @@ export function NoteWorkspace({
             </div>
           </div>
 
+          {!covered && (
+            <div className="swipe-guide" aria-hidden="true">
+              <span>← 왼쪽으로 밀기 · {canGoNewer ? "다음 페이지" : "새 페이지"}</span>
+              <span>오른쪽으로 밀기 · 지난 페이지 →</span>
+            </div>
+          )}
 
           <p className="mt-10 text-center text-xs text-muted-foreground">
             완벽하지 않아도 괜찮습니다. 기록은 이 브라우저에만 머무릅니다.

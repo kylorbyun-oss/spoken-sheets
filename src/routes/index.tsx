@@ -53,12 +53,20 @@ function Desk() {
     [navigate],
   );
 
+  const handlePageChange = useCallback(
+    (pageId: string | undefined) => {
+      void navigate({ to: "/", search: pageId ? { id: pageId } : {}, replace: true });
+    },
+    [navigate],
+  );
+
   const covered = phase !== "open";
 
   return (
     <NoteWorkspace
       noteId={id}
       onNoteCreated={handleNoteCreated}
+      onPageChange={handlePageChange}
       covered={covered}
       opening={phase === "opening"}
       onOpen={open}
