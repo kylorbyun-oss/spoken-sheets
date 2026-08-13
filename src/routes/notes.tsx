@@ -53,7 +53,7 @@ function SavedNotes() {
             </p>
           </div>
           <Link
-            to="/"
+            to="/" search={{}}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
           >
             <Mic className="size-4" /> 새 페이지
@@ -67,7 +67,7 @@ function SavedNotes() {
               첫 문장은 완성되지 않아도 괜찮습니다.
             </p>
             <Link
-              to="/"
+              to="/" search={{}}
               className="mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm transition-colors hover:bg-secondary"
             >
               <Mic className="size-4" /> 떠오르는 대로 남기기
