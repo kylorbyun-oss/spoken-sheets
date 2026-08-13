@@ -306,18 +306,53 @@
   perspective-origin: 50% 40%;
 }
 
+/* Yellow K Tools cover: charcoal steel, thin grid, industrial yellow slash. */
 @utility book-cover {
   transform-origin: left center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  background-image: linear-gradient(
-    145deg,
-    color-mix(in oklab, var(--primary) 92%, var(--accent)) 0%,
-    var(--primary) 55%,
-    color-mix(in oklab, var(--primary) 88%, black) 100%
-  );
-  border: 1px solid color-mix(in oklab, var(--primary) 70%, black);
-  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+  background-color: var(--steel-900);
+  background-image:
+    /* industrial yellow diagonal hazard slashes */
+    repeating-linear-gradient(
+      -45deg,
+      color-mix(in oklab, var(--industrial-yellow) 90%, transparent) 0 14px,
+      transparent 14px 34px
+    ),
+    /* thin metallic grid */
+    repeating-linear-gradient(
+      to right,
+      color-mix(in oklab, white 8%, transparent) 0 1px,
+      transparent 1px 34px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in oklab, white 6%, transparent) 0 1px,
+      transparent 1px 34px
+    ),
+    /* brushed metal sheen */
+    linear-gradient(
+      145deg,
+      var(--steel-700) 0%,
+      var(--steel-900) 45%,
+      var(--steel-950) 100%
+    );
+  background-size:
+    100% 46%,
+    auto,
+    auto,
+    auto;
+  background-position:
+    0 100%,
+    0 0,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, repeat, repeat, no-repeat;
+  border: 1px solid color-mix(in oklab, white 12%, var(--steel-950));
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 14%, transparent),
+    var(--shadow-lift);
   &::after {
     content: "";
     position: absolute;
@@ -325,15 +360,16 @@
     bottom: 0;
     left: 0;
     width: 1.1rem;
-    border-right: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+    border-right: 1px solid color-mix(in oklab, var(--industrial-yellow) 40%, transparent);
     background-image: linear-gradient(
       to right,
-      color-mix(in oklab, black 22%, transparent),
+      color-mix(in oklab, black 55%, transparent),
       transparent
     );
     pointer-events: none;
   }
 }
+
 
 @keyframes vb-cover-open {
   0% {
