@@ -266,28 +266,30 @@ export function NoteWorkspace({
                   opening ? "book-cover-open" : ""
                 }`}
               >
-                <p className="font-serif-display text-[0.7rem] tracking-[0.42em] text-primary-foreground/60">
+                <p className="font-serif-display text-[0.7rem] tracking-[0.42em] text-industrial-yellow">
                   VOICE BOOK
                 </p>
 
                 <div className="flex flex-1 flex-col items-start justify-center py-8">
-                  <h2 className="text-balance-tight font-serif-display text-[1.9rem] leading-[2.9rem] text-primary-foreground sm:text-[2.8rem] sm:leading-[4rem]">
+                  <h2 className="text-balance-tight font-serif-display text-[1.9rem] leading-[2.9rem] text-steel-foreground sm:text-[2.8rem] sm:leading-[4rem]">
                     생각을 한 장의
                     <br />
                     페이지로 남긴다.
                   </h2>
-                  <p className="mt-6 min-h-5 font-serif-display text-sm tracking-[0.16em] text-primary-foreground/55">
+                  <span className="mt-6 block h-px w-16 bg-industrial-yellow" />
+                  <p className="mt-5 min-h-5 font-serif-display text-sm tracking-[0.16em] text-steel-foreground/60">
                     {today}
                   </p>
                 </div>
 
                 <button
                   onClick={onOpen}
-                  className="self-start font-serif-display text-lg text-primary-foreground/90 transition-opacity hover:opacity-70"
+                  className="self-start rounded-full border border-industrial-yellow/60 px-5 py-2.5 font-serif-display text-base text-steel-foreground transition-colors hover:border-industrial-yellow hover:bg-industrial-yellow/15 sm:text-lg"
                 >
                   {opening ? "펼치는 중…" : "📖 빈 페이지 펼치기"}{" "}
                   <span aria-hidden="true">→</span>
                 </button>
+
               </div>
             )}
 
