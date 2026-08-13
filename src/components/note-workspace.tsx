@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { AlertCircle, BookOpen, Check, ChevronLeft, ChevronRight, Feather, Mic, MicOff, RotateCcw, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { ToolHomeButton } from "@/components/page-shell";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { adjacentNoteId, countWords, formatDate, getNote, saveNote } from "@/lib/notes";
 

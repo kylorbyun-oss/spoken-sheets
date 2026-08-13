@@ -41,6 +41,8 @@
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ruled: var(--ruled);
+  --color-steel-foreground: var(--steel-foreground);
+  --color-industrial-yellow: var(--industrial-yellow);
   --font-serif-display: "Gowun Batang", "Iowan Old Style", Georgia, serif;
   --font-hand: "Gaegu", "Gowun Batang", cursive;
   --font-sans: "Noto Sans KR", system-ui, sans-serif;
