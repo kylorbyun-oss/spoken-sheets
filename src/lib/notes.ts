@@ -32,6 +32,16 @@ export function loadNotes(): Note[] {
   }
 }
 
+/** Read-only, portable backup for moving pages to the official Voice Book later. */
+export function createNotesBackup() {
+  return {
+    version: 1,
+    source: STORAGE_KEY,
+    exported_at: new Date().toISOString(),
+    documents: loadNotes(),
+  };
+}
+
 
 function persist(notes: Note[]) {
   if (!canStore()) return;

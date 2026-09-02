@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mic, Trash2 } from "lucide-react";
+import { Download, Mic, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { PageShell } from "@/components/page-shell";
 import {
   countWords,
+  createNotesBackup,
   deleteNote,
   formatDate,
   loadNotes,
@@ -41,6 +42,16 @@ function SavedNotes() {
     setNotes(loadNotes());
   };
 
+  const downloadBackup = () => {
+    const backup = createNotesBackup();
+    const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `voice-book-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
   return (
     <PageShell>
       <div className="mx-auto max-w-4xl px-5 pt-10 pb-24 sm:pt-16">
@@ -52,12 +63,21 @@ function SavedNotes() {
               {ready ? `${notes.length}장의 페이지가 여기에 머물고 있습니다.` : "페이지를 펼치는 중…"}
             </p>
           </div>
-          <Link
-            to="/" search={{}}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
-          >
-            <Mic className="size-4" /> 새 페이지
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={downloadBackup}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary"
+            >
+              <Download className="size-4" /> JSON 백업
+            </button>
+            <Link
+              to="/" search={{}}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
+            >
+              <Mic className="size-4" /> 새 페이지
+            </Link>
+          </div>
         </div>
 
         {ready && notes.length === 0 && (
